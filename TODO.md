@@ -1,0 +1,6 @@
+- [x] Update server/package.json to add axios dependency
+- [x] Modify server/server.js to import huggingface-routes.js, remove inline Hugging Face route, and add app.use("/api/ai", huggingfaceRouter)
+- [ ] Run npm install in server directory to install axios (user needs to run manually)
+- [ ] Ensure environment variables TRYON_URL and HF_TOKEN are set in .env file
+- [ ] Test the /api/ai/tryon endpoint
+- [x] Integrate try-on feature in product-details-page.jsx
