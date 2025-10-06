@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import bannerOne from "../../assets/banner-1.webp";
-import bannerTwo from "../../assets/banner-2.jpg";
-import bannerThree from "../../assets/banner-3.jpg";
+import bannerOne from "../../assets/1000131587.png";
+import bannerTwo from "../../assets/1000131589.png";
+import bannerThree from "../../assets/1000131588.png";
 import { ChevronLeftIcon, ChevronRightIcon, ShirtIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
@@ -101,7 +101,7 @@ function ShoppingHome() {
                 : index < currentSlide
                 ? "-translate-x-full opacity-0 scale-95"
                 : "translate-x-full opacity-0 scale-95"
-            } absolute top-0 left-0 w-full h-full object-cover transition-all duration-1000 ease-in-out transform hover:scale-105`}
+            } absolute top-0 left-0 w-full h-full object-contain transition-all duration-1000 ease-in-out`}
             alt="Men's Wear Banner"
           />
         ))}
