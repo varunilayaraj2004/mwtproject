@@ -2,6 +2,12 @@ import { Button } from "@/components/ui/button";
 import bannerOne from "../../assets/1000131587.png";
 import bannerTwo from "../../assets/1000131589.png";
 import bannerThree from "../../assets/1000131588.png";
+import nike from "../../assets/nike.png";
+import adidasLogo from "../../assets/Adidas.png";
+import pumaLogo from "../../assets/puma.png";
+import levisLogo from "../../assets/levis.png";
+import zaraLogo from "../../assets/Zara.png";
+import hmLogo from "../../assets/h&m.png";
 import { ChevronLeftIcon, ChevronRightIcon, ShirtIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
@@ -17,12 +23,12 @@ import { getFeatureImages } from "@/store/common-slice";
 import ShoppingFooter from "@/components/shopping-view/footer";
 
 const brandsWithIcon = [
-  { id: "nike", label: "Nike", icon: ShirtIcon },
-  { id: "adidas", label: "Adidas", icon: ShirtIcon },
-  { id: "puma", label: "Puma", icon: ShirtIcon },
-  { id: "levi", label: "Levi's", icon: ShirtIcon },
-  { id: "zara", label: "Zara", icon: ShirtIcon },
-  { id: "h&m", label: "H&M", icon: ShirtIcon },
+  { id: "nike", label: "Nike", icon: nike },
+  { id: "adidas", label: "Adidas", icon: adidasLogo },
+  { id: "puma", label: "Puma", icon: pumaLogo },
+  { id: "levi", label: "Levi's", icon: levisLogo },
+  { id: "zara", label: "Zara", icon: zaraLogo },
+  { id: "h&m", label: "H&M", icon: hmLogo },
 ];
 
 function ShoppingHome() {
@@ -95,13 +101,12 @@ function ShoppingHome() {
           <img
             src={slide}
             key={index}
-            className={`${
-              index === currentSlide
+            className={`${index === currentSlide
                 ? "translate-x-0 opacity-100 scale-100"
                 : index < currentSlide
-                ? "-translate-x-full opacity-0 scale-95"
-                : "translate-x-full opacity-0 scale-95"
-            } absolute top-0 left-0 w-full h-full object-contain transition-all duration-1000 ease-in-out`}
+                  ? "-translate-x-full opacity-0 scale-95"
+                  : "translate-x-full opacity-0 scale-95"
+              } absolute top-0 left-0 w-full h-full object-contain transition-all duration-1000 ease-in-out`}
             alt="Men's Wear Banner"
           />
         ))}
@@ -137,11 +142,10 @@ function ShoppingHome() {
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
                   ? "bg-white scale-125"
                   : "bg-white/50 hover:bg-white/75"
-              }`}
+                }`}
             />
           ))}
         </div>
@@ -158,7 +162,11 @@ function ShoppingHome() {
                 className="cursor-pointer rounded-full bg-blue-100 hover:shadow-lg transition-shadow"
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
-                  <brandItem.icon className="w-12 h-12 mb-4 text-primary" />
+                  <img
+                    src={brandItem.icon}
+                    alt={brandItem.label}
+                    className="w-24 h-24 mb-4 object-contain rounded-full"
+                  />
                   <span className="font-bold">{brandItem.label}</span>
                 </CardContent>
               </Card>
@@ -173,13 +181,13 @@ function ShoppingHome() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productList && productList.length > 0
               ? productList.slice(0, 8).map((productItem) => (
-                  <ShoppingProductTile
-                    key={productItem._id}
-                    product={productItem}
-                    handleAddtoCart={handleAddtoCart}
-                  />
-                ))
-            : <p className="col-span-full text-center">No new arrivals found.</p>}
+                <ShoppingProductTile
+                  key={productItem._id}
+                  product={productItem}
+                  handleAddtoCart={handleAddtoCart}
+                />
+              ))
+              : <p className="col-span-full text-center">No new arrivals found.</p>}
           </div>
         </div>
       </section>
@@ -190,13 +198,13 @@ function ShoppingHome() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productList && productList.length > 0
               ? productList.slice(4, 12).map((productItem) => (
-                  <ShoppingProductTile
-                    key={productItem._id}
-                    product={productItem}
-                    handleAddtoCart={handleAddtoCart}
-                  />
-                ))
-            : <p className="col-span-full text-center">No best sellers found.</p>}
+                <ShoppingProductTile
+                  key={productItem._id}
+                  product={productItem}
+                  handleAddtoCart={handleAddtoCart}
+                />
+              ))
+              : <p className="col-span-full text-center">No best sellers found.</p>}
           </div>
         </div>
       </section>
@@ -225,9 +233,9 @@ function ShoppingHome() {
             </Card>
             <Card className="animate-fadeInUp delay-150">
               <CardContent className="p-6">
-              <p className="text-gray-600 mb-4">
-                &ldquo;Great selection of men&apos;s fashion. Love the styles!&rdquo;
-              </p>
+                <p className="text-gray-600 mb-4">
+                  &ldquo;Great selection of men&apos;s fashion. Love the styles!&rdquo;
+                </p>
                 <div className="flex items-center">
                   <img
                     src="/src/assets/account.jpg"
