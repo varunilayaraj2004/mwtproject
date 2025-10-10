@@ -42,36 +42,7 @@ function AdminDashboard() {
 
   return (
     <div className="p-6 space-y-8">
-      {/* Upload Section */}
-      <Card className="p-6">
-        <CardHeader>
-          <CardTitle>Upload Feature Image</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ProductImageUpload
-            imageFile={imageFile}
-            setImageFile={setImageFile}
-            uploadedImageUrl={uploadedImageUrl}
-            setUploadedImageUrl={setUploadedImageUrl}
-            setImageLoadingState={setImageLoadingState}
-            imageLoadingState={imageLoadingState}
-            isCustomStyling={true}
-          />
-          <Button
-            onClick={() => {
-              dispatch(addFeatureImage(uploadedImageUrl)).then(() => {
-                dispatch(getFeatureImages());
-                setImageFile(null);
-                setUploadedImageUrl("");
-              });
-            }}
-            className="mt-4 w-full bg-blue-600 text-white hover:bg-blue-700"
-          >
-            Upload
-          </Button>
-        </CardContent>
-      </Card>
-
+      <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
       {/* Dashboard Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="p-4 shadow-md">

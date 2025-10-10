@@ -89,13 +89,24 @@ function AdminOrderDetailsView({ orderDetails }) {
             <div className="font-medium">Order Details</div>
             <ul className="grid gap-3">
               {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
-                ? orderDetails?.cartItems.map((item) => (
-                    <li key={item._id} className="flex items-center justify-between">
-                      <span>Title: {item.title}</span>
-                      <span>Quantity: {item.quantity}</span>
-                      <span>Price: ₹{item.price}</span>
-                    </li>
-                  ))
+                ? (() => {
+                    const groupedItems = orderDetails.cartItems.reduce((acc, item) => {
+                      if (!acc[item.productId]) {
+                        acc[item.productId] = { ...item };
+                      } else {
+                        acc[item.productId].quantity += item.quantity;
+                      }
+                      return acc;
+                    }, {});
+                    const groupedArray = Object.values(groupedItems);
+                    return groupedArray.map((item) => (
+                      <li key={item.productId} className="flex items-center justify-between">
+                        <span>Title: {item.title}</span>
+                        <span>Quantity: {item.quantity}</span>
+                        <span>Price: ₹{item.price}</span>
+                      </li>
+                    ));
+                  })()
                 : null}
             </ul>
           </div>

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const paypal = require("../../helpers/paypal");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
@@ -20,73 +21,104 @@ const createOrder = async (req, res) => {
       cartId,
     } = req.body;
 
-    const create_payment_json = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal",
-      },
-      redirect_urls: {
-        return_url: "http://localhost:3000/shop/paypal-return",
-        cancel_url: "http://localhost:3000/shop/checkout",
-      },
-      transactions: [
-        {
-          item_list: {
-            items: cartItems.map((item) => ({
-              name: item.title,
-              sku: item.productId,
-              price: item.price.toString(),
-              currency: "USD",
-              quantity: item.quantity,
-            })),
-          },
-          amount: {
-            currency: "USD",
-            total: totalAmount.toString(),
-          },
-          description: "Payment for order",
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    if (paymentMethod === "cod") {
+      const newlyCreatedOrder = new Order({
+        userId: userObjectId,
+        cartId,
+        cartItems,
+        addressInfo,
+        orderStatus: "confirmed",
+        paymentMethod,
+        paymentStatus,
+        totalAmount,
+        orderDate,
+        orderUpdateDate,
+        paymentId,
+        payerId,
+      });
+
+      await newlyCreatedOrder.save();
+
+      // Delete cart
+      await Cart.findByIdAndDelete(cartId);
+
+      res.status(201).json({
+        success: true,
+        orderId: newlyCreatedOrder._id,
+      });
+    } else {
+      const newlyCreatedOrder = new Order({
+        userId: userObjectId,
+        cartId,
+        cartItems,
+        addressInfo,
+        orderStatus,
+        paymentMethod: "paypal",
+        paymentStatus,
+        totalAmount,
+        orderDate,
+        orderUpdateDate,
+        paymentId: "",
+        payerId: "",
+      });
+
+      await newlyCreatedOrder.save();
+
+      const create_payment_json = {
+        intent: "sale",
+        payer: {
+          payment_method: "paypal",
         },
-      ],
-    };
+        redirect_urls: {
+          return_url: "http://localhost:3000/shop/paypal-return",
+          cancel_url: "http://localhost:3000/shop/checkout",
+        },
+        transactions: [
+          {
+            item_list: {
+              items: cartItems.map((item) => ({
+                name: item.title,
+                sku: item.productId,
+                price: item.price.toString(),
+                currency: "USD",
+                quantity: item.quantity,
+              })),
+            },
+            amount: {
+              currency: "USD",
+              total: totalAmount.toString(),
+            },
+            description: "Payment for order",
+          },
+        ],
+      };
 
-    paypal.payment.create(create_payment_json, async function (error, payment) {
-      if (error) {
-        console.log(error);
-        return res.status(500).json({
-          success: false,
-          message: "Error while creating PayPal payment",
-        });
-      } else {
-        const newlyCreatedOrder = new Order({
-          userId,
-          cartId,
-          cartItems,
-          addressInfo,
-          orderStatus,
-          paymentMethod: "paypal",
-          paymentStatus,
-          totalAmount,
-          orderDate,
-          orderUpdateDate,
-          paymentId,
-          payerId,
-          paypalOrderId: payment.id,
-        });
+      paypal.payment.create(create_payment_json, async function (error, payment) {
+        if (error) {
+          console.log(error);
+          return res.status(500).json({
+            success: false,
+            message: "Error while creating PayPal payment",
+          });
+        } else {
+          newlyCreatedOrder.paypalOrderId = payment.id;
+          await newlyCreatedOrder.save();
 
-        await newlyCreatedOrder.save();
+          const approvalURL = payment.links.find(
+            (link) => link.rel === "approval_url"
+          ).href;
 
-        const approvalURL = payment.links.find(
-          (link) => link.rel === "approval_url"
-        ).href;
-
-        res.status(201).json({
-          success: true,
-          approvalURL,
-          orderId: newlyCreatedOrder._id,
-          paymentId: payment.id,
-        });
-      }
-    });
+          res.status(201).json({
+            success: true,
+            approvalURL,
+            orderId: newlyCreatedOrder._id,
+            paymentId: payment.id,
+          });
+        }
+      });
+    }
   } catch (e) {
     console.log(e);
     res.status(500).json({
@@ -166,7 +198,9 @@ const getAllOrdersByUser = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const orders = await Order.find({ userId });
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    const orders = await Order.find({ userId: userObjectId });
 
     if (!orders.length) {
       return res.status(404).json({

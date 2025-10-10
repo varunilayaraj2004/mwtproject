@@ -10,12 +10,14 @@ const {
 
 const { upload } = require("../../helpers/cloudinary");
 
+const { authMiddleware, adminMiddleware } = require("../../controllers/auth/auth-controller");
+
 const router = express.Router();
 
-router.post("/upload-image", upload.single("my_file"), handleImageUpload);
-router.post("/add", addProduct);
-router.put("/edit/:id", editProduct);
-router.delete("/delete/:id", deleteProduct);
-router.get("/get", fetchAllProducts);
+router.post("/upload-image", authMiddleware, adminMiddleware, upload.single("my_file"), handleImageUpload);
+router.post("/add", authMiddleware, adminMiddleware, addProduct);
+router.put("/edit/:id", authMiddleware, adminMiddleware, editProduct);
+router.delete("/delete/:id", authMiddleware, adminMiddleware, deleteProduct);
+router.get("/get", authMiddleware, adminMiddleware, fetchAllProducts);
 
 module.exports = router;

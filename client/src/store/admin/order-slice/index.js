@@ -4,6 +4,8 @@ import axios from "axios";
 const initialState = {
   orderList: [],
   orderDetails: null,
+  isLoading: false,
+  error: null,
 };
 
 export const getAllOrdersForAdmin = createAsyncThunk(
@@ -56,14 +58,17 @@ const adminOrderSlice = createSlice({
     builder
       .addCase(getAllOrdersForAdmin.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(getAllOrdersForAdmin.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orderList = action.payload.data;
+        state.error = null;
       })
-      .addCase(getAllOrdersForAdmin.rejected, (state) => {
+      .addCase(getAllOrdersForAdmin.rejected, (state, action) => {
         state.isLoading = false;
         state.orderList = [];
+        state.error = action.error.message || "Failed to fetch orders";
       })
       .addCase(getOrderDetailsForAdmin.pending, (state) => {
         state.isLoading = true;
