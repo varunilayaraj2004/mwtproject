@@ -1,9 +1,7 @@
-# Product Details Page Styling Improvements
+# TODO for Header Navigation Update
 
-- [x] Enhance overall layout: Increase max-width, improve padding and margins for better spacing
-- [x] Improve image gallery: Larger main image, better thumbnail layout with hover effects
-- [x] Update product info section: Better typography, visual hierarchy, and button styling
-- [x] Style reviews section: Add cards with shadows, improve avatar and rating display
-- [x] Polish AI try-on section: Better integration, styling for inputs and results
-- [x] Improve related products display: Grid layout enhancements
-- [x] Ensure responsive design: Adjust grid columns and spacing for mobile
+## Steps:
+- [x] 1. Edit client/src/config/index.js to update shoppingViewHeaderMenuItems array: Keep only home, products (label: "Products", path: "/shop/listing"), and search. Remove shirts, pants, jackets, shoes.
+- [x] 2. Verify the config file changes by reading it back.
+- [x] 3. Run the development server (cd client && npm run dev) and test navigation in browser: Confirm menu shows only Home, Products, Search.
+- [x] 4. Mark task complete and update TODO.md.
