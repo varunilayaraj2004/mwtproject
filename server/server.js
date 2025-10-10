@@ -5,6 +5,9 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const fetch = require("node-fetch");
+const session = require("express-session");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 // Routers
 const authRouter = require("./routes/auth/auth-routes");
@@ -53,6 +56,43 @@ mongoose
   })
   .catch((error) => console.log("❌ MongoDB connection error:", error));
 
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: "/api/auth/google/callback"
+}, async (accessToken, refreshToken, profile, done) => {
+  try {
+    let user = await User.findOne({ googleId: profile.id });
+    if (!user) {
+      user = await User.findOne({ email: profile.emails[0].value });
+      if (user) {
+        user.googleId = profile.id;
+        await user.save();
+      } else {
+        user = new User({
+          userName: profile.displayName || 'Google User',
+          email: profile.emails[0].value,
+          googleId: profile.id,
+          role: 'user'
+        });
+        await user.save();
+      }
+    }
+    return done(null, user);
+  } catch (err) {
+    return done(err, null);
+  }
+}));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  const user = await User.findById(id);
+  done(null, user);
+});
+
 // Express App
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -75,6 +115,15 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || "your-session-secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // ===== Routes =====
 app.use("/api/auth", authRouter);
