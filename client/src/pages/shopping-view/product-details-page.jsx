@@ -178,17 +178,16 @@ function ProductDetailsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div className="max-w-7xl mx-auto p-8 bg-gray-50 min-h-screen grid grid-cols-1 lg:grid-cols-3 gap-12">
       {/* Left / Images Section */}
       <div className="col-span-1">
         {/* Main product image/public view */}
         <img
           src={selectedImage || productDetails.image}
           alt={productDetails?.title}
-          className="w-full rounded-lg object-cover"
-          style={{ aspectRatio: "1 / 1" }}
+          className="w-full h-96 lg:h-[500px] rounded-xl object-cover shadow-lg"
         />
-        <div className="flex gap-4 mt-4 overflow-x-auto">
+        <div className="flex gap-3 mt-6 overflow-x-auto pb-2">
           {[productDetails.image, ...(productDetails.additionalImages || [])].map(
             (img, idx) =>
               img && (
@@ -196,8 +195,8 @@ function ProductDetailsPage() {
                   key={idx}
                   src={img}
                   alt={`Thumbnail ${idx}`}
-                  className={`w-20 h-20 rounded-lg cursor-pointer object-cover border-2 ${
-                    selectedImage === img ? "border-primary" : "border-transparent"
+                  className={`w-24 h-24 rounded-lg cursor-pointer object-cover border-2 transition-all duration-200 hover:scale-105 ${
+                    selectedImage === img ? "border-blue-500 shadow-md" : "border-gray-300 hover:border-gray-400"
                   }`}
                   onClick={() => {
                     setSelectedImage(img);
@@ -208,57 +207,57 @@ function ProductDetailsPage() {
         </div>
 
         {/* AI Try-On Section */}
-        <div className="mt-6 border-t pt-6">
-          <h3 className="text-lg font-semibold mb-4">AI Try-On Feature</h3>
-          <Label htmlFor="personImage" className="block mb-2">Person Image URL</Label>
+        <div className="mt-8 border-t border-gray-200 pt-8 bg-white rounded-lg p-6 shadow-sm">
+          <h3 className="text-xl font-bold mb-6 text-gray-800">AI Try-On Feature</h3>
+          <Label htmlFor="personImage" className="block mb-4 text-gray-700 font-medium">Person Image URL</Label>
           <Input
             id="personImage"
             type="url"
             value={personImageUrl}
             onChange={(e) => setPersonImageUrl(e.target.value)}
             placeholder="Enter URL of person image"
-            className="mb-4"
+            className="mb-6 border-gray-300 focus:border-blue-500 rounded-lg"
           />
-          <Button onClick={handleTryOn} disabled={isTryingOn} className="w-full mb-4">
+          <Button onClick={handleTryOn} disabled={isTryingOn} className="w-full mb-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors">
             {isTryingOn ? "Trying On..." : "Try On"}
           </Button>
-          {tryOnError && <p className="text-red-500 mb-2">{tryOnError}</p>}
+          {tryOnError && <p className="text-red-500 mb-4 font-medium">{tryOnError}</p>}
           {tryOnResult && (
             <div>
-              <h4 className="text-md font-medium mb-2">Try-On Result</h4>
-              <img src={tryOnResult.image || tryOnResult.result || tryOnResult} alt="Try-on result" className="w-full rounded-lg" />
+              <h4 className="text-lg font-semibold mb-4 text-gray-800">Try-On Result</h4>
+              <img src={tryOnResult.image || tryOnResult.result || tryOnResult} alt="Try-on result" className="w-full rounded-lg shadow-md" />
             </div>
           )}
         </div>
       </div>
 
       {/* Right / Product Info Section */}
-      <div className="col-span-2 flex flex-col">
-        <h1 className="text-4xl font-extrabold mb-4">
+      <div className="col-span-2 flex flex-col space-y-6">
+        <h1 className="text-5xl font-bold text-gray-900 leading-tight">
           {productDetails?.title}
         </h1>
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-4 mb-6">
           <StarRatingComponent rating={averageReview} />
-          <span className="text-muted-foreground">
+          <span className="text-gray-600 font-medium">
             ({averageReview.toFixed(2)})
           </span>
         </div>
-        <p className="text-2xl font-semibold text-primary mb-4">
+        <p className="text-3xl font-bold text-green-600 mb-6">
           ₹
           {productDetails?.salePrice > 0
             ? productDetails.salePrice
             : productDetails?.price}
           {productDetails?.salePrice > 0 && (
-            <span className="line-through text-muted-foreground ml-2">
+            <span className="line-through text-gray-500 ml-3 text-xl">
               ₹{productDetails?.price}
             </span>
           )}
         </p>
-        <p className="mb-6">{productDetails?.description}</p>
+        <p className="text-gray-700 leading-relaxed mb-8">{productDetails?.description}</p>
 
         <Button
-          className={`w-48 mb-6 ${
-            productDetails.totalStock === 0 ? "opacity-60 cursor-not-allowed" : ""
+          className={`w-56 mb-8 py-3 px-6 rounded-lg font-semibold text-lg transition-all ${
+            productDetails.totalStock === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg"
           }`}
           disabled={productDetails.totalStock === 0}
           onClick={handleAddToCart}
@@ -269,48 +268,48 @@ function ProductDetailsPage() {
         <Separator />
 
         {/* Reviews Section */}
-        <div className="mt-6">
-          <h2 className="text-3xl font-bold mb-6 flex items-center justify-between">
+        <div className="mt-10 bg-white rounded-lg p-8 shadow-sm">
+          <h2 className="text-4xl font-bold mb-8 text-gray-900 flex items-center justify-between">
             Reviews
-            <span className="text-sm text-muted-foreground">
+            <span className="text-lg text-gray-600 font-medium">
               {reviews ? reviews.length : 0} review
               {reviews && reviews.length !== 1 ? "s" : ""}
             </span>
           </h2>
           {reviews && reviews.length > 0 ? (
-            <div className="space-y-6 mb-8">
+            <div className="space-y-8 mb-10">
               {reviews.map((rev) => (
                 <div
                   key={rev._id}
-                  className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 flex gap-4"
+                  className="p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 flex gap-6"
                   role="article"
                   aria-label={`Review by ${rev.userName}`}
                 >
-                  <Avatar className="w-12 h-12 border flex-shrink-0">
-                    <AvatarFallback>
+                  <Avatar className="w-14 h-14 border-2 border-gray-300 flex-shrink-0">
+                    <AvatarFallback className="text-lg font-semibold">
                       {rev.userName[0]?.toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col flex-grow">
-                    <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-semibold text-lg">{rev.userName}</h3>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-xl text-gray-800">{rev.userName}</h3>
                       {rev.date && (
                         <time
                           dateTime={new Date(rev.date).toISOString()}
-                          className="text-xs text-muted-foreground"
+                          className="text-sm text-gray-500 font-medium"
                         >
                           {new Date(rev.date).toLocaleDateString()}
                         </time>
                       )}
                     </div>
                     <StarRatingComponent rating={rev.reviewValue} />
-                    <p className="mt-2 text-muted-foreground">{rev.reviewMessage}</p>
+                    <p className="mt-4 text-gray-700 leading-relaxed">{rev.reviewMessage}</p>
                     {rev.reviewImage && (
                       <img
                         src={rev.reviewImage}
                         alt="review pic"
-                        className="mt-2 rounded-lg"
-                        style={{ maxWidth: "200px", objectFit: "cover" }}
+                        className="mt-4 rounded-lg shadow-sm"
+                        style={{ maxWidth: "250px", objectFit: "cover" }}
                       />
                     )}
                   </div>
@@ -318,13 +317,13 @@ function ProductDetailsPage() {
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground italic">
+            <p className="text-gray-500 italic text-lg">
               No reviews yet. Be the first to review!
             </p>
           )}
 
-          <div className="border-t pt-6">
-            <Label htmlFor="reviewMsg" className="mb-2 block font-semibold">
+          <div className="border-t border-gray-200 pt-8 mt-8">
+            <Label htmlFor="reviewMsg" className="mb-4 block text-lg font-semibold text-gray-800">
               Write a review
             </Label>
             <StarRatingComponent rating={rating} handleRatingChange={handleRatingChange} />
@@ -334,11 +333,11 @@ function ProductDetailsPage() {
               value={reviewMsg}
               onChange={(e) => setReviewMsg(e.target.value)}
               placeholder="Write a review..."
-              className="mt-2 mb-2"
+              className="mt-4 mb-6 border-gray-300 focus:border-blue-500 rounded-lg"
               aria-required="true"
             />
 
-            <Button onClick={handleAddReview} disabled={reviewMsg.trim() === ""}>
+            <Button onClick={handleAddReview} disabled={reviewMsg.trim() === ""} className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition-colors disabled:bg-gray-400">
               Submit Review
             </Button>
           </div>
@@ -346,9 +345,9 @@ function ProductDetailsPage() {
       </div>
 
       {/* Related Products Section */}
-      <div className="col-span-3 mt-10">
-        <h2 className="text-2xl font-bold mb-6">You might also like</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-6">
+      <div className="col-span-3 mt-16 bg-white rounded-lg p-8 shadow-sm">
+        <h2 className="text-3xl font-bold mb-10 text-gray-900">You might also like</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {relatedProducts.length ? (
             relatedProducts.map((relatedProduct) => (
               <ShoppingProductTile
@@ -382,7 +381,7 @@ function ProductDetailsPage() {
               />
             ))
           ) : (
-            <p>No related products found.</p>
+            <p className="text-gray-500 italic text-lg">No related products found.</p>
           )}
         </div>
       </div>
