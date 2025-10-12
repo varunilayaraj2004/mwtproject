@@ -1,10 +1,10 @@
-require("dotenv").config();
+require("dotenv").config({ path: "./.env" });
 const mongoose = require("mongoose");
 const Product = require("./models/Product");
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -30,7 +30,6 @@ const shirtImages = [
   "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1523381210434-5a0760d9c0e0?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=300&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=300&h=300&fit=crop",
@@ -45,7 +44,6 @@ const pantsImages = [
   "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1506629905607-0b5b8b5b5b5b?w=300&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=300&h=300&fit=crop",
 ];
@@ -85,7 +83,6 @@ const accessoriesImages = [
   "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1523381210434-5a0760d9c0e0?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=300&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=300&h=300&fit=crop",
   "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
 ];
 

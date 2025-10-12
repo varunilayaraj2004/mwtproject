@@ -29,7 +29,9 @@ export const addFeatureImage = createAsyncThunk(
 export const getDashboardStats = createAsyncThunk(
   "common/getDashboardStats",
   async () => {
-    const response = await axios.get("http://localhost:5000/api/admin/dashboard-stats");
+    const response = await axios.get("http://localhost:5000/api/admin/dashboard-stats", {
+      withCredentials: true,
+    });
     return response.data;
   }
 );

@@ -277,42 +277,39 @@ function ProductDetailsPage() {
             </span>
           </h2>
           {reviews && reviews.length > 0 ? (
-            <div className="space-y-8 mb-10">
+            <div className="space-y-4 mb-10">
               {reviews.map((rev) => (
                 <div
                   key={rev._id}
-                  className="p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 flex gap-6"
+                  className="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-4"
                   role="article"
                   aria-label={`Review by ${rev.userName}`}
                 >
-                  <Avatar className="w-14 h-14 border-2 border-gray-300 flex-shrink-0">
-                    <AvatarFallback className="text-lg font-semibold">
+                  <Avatar className="w-10 h-10 border-2 border-gray-300 flex-shrink-0">
+                    <AvatarFallback className="text-sm font-semibold">
                       {rev.userName[0]?.toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col flex-grow">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-xl text-gray-800">{rev.userName}</h3>
-                      {rev.date && (
-                        <time
-                          dateTime={new Date(rev.date).toISOString()}
-                          className="text-sm text-gray-500 font-medium"
-                        >
-                          {new Date(rev.date).toLocaleDateString()}
-                        </time>
-                      )}
-                    </div>
+                  <div className="flex items-center gap-3 flex-grow">
+                    <h3 className="font-semibold text-gray-800">{rev.userName}</h3>
                     <StarRatingComponent rating={rev.reviewValue} />
-                    <p className="mt-4 text-gray-700 leading-relaxed">{rev.reviewMessage}</p>
-                    {rev.reviewImage && (
-                      <img
-                        src={rev.reviewImage}
-                        alt="review pic"
-                        className="mt-4 rounded-lg shadow-sm"
-                        style={{ maxWidth: "250px", objectFit: "cover" }}
-                      />
+                    <p className="text-gray-700 flex-grow">{rev.reviewMessage}</p>
+                    {rev.date && (
+                      <time
+                        dateTime={new Date(rev.date).toISOString()}
+                        className="text-sm text-gray-500 font-medium whitespace-nowrap"
+                      >
+                        {new Date(rev.date).toLocaleDateString()}
+                      </time>
                     )}
                   </div>
+                  {rev.reviewImage && (
+                    <img
+                      src={rev.reviewImage}
+                      alt="review pic"
+                      className="w-16 h-16 rounded-lg shadow-sm object-cover flex-shrink-0"
+                    />
+                  )}
                 </div>
               ))}
             </div>

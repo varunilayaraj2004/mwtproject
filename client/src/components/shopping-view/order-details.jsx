@@ -56,9 +56,19 @@ function ShoppingOrderDetailsView({ orderDetails }) {
               {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                 ? orderDetails?.cartItems.map((item) => (
                     <li key={item._id} className="flex items-center justify-between">
-                      <span>Title: {item.title}</span>
-                      <span>Quantity: {item.quantity}</span>
-                      <span>Price: ₹{item.price}</span>
+                      <div className="flex items-center space-x-4">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                        <div>
+                          <span className="font-medium">{item.title}</span>
+                          <div className="text-sm text-muted-foreground">
+                            Quantity: {item.quantity} | Price: ₹{item.price}
+                          </div>
+                        </div>
+                      </div>
                     </li>
                   ))
                 : null}

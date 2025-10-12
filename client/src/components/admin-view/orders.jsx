@@ -82,12 +82,7 @@ function AdminOrdersView() {
                   </TableCell>
                 </TableRow>
               ) : orderList && orderList.length > 0 ? (
-                orderList.filter((orderItem) => {
-                  const oneMonthAgo = new Date();
-                  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-                  const orderDate = new Date(orderItem?.orderDate);
-                  return orderDate >= oneMonthAgo;
-                }).map((orderItem) => (
+                orderList.map((orderItem) => (
                   <TableRow key={orderItem?._id}>
                     <TableCell>{orderItem?.userId?.userName}</TableCell>
                     <TableCell>{orderItem?._id}</TableCell>
