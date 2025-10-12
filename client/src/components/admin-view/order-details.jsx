@@ -43,7 +43,7 @@ function AdminOrderDetailsView({ orderDetails }) {
   }
 
   return (
-    <DialogContent className="sm:max-w-[600px]">
+    <DialogContent className="sm:max-w-[600px] bg-white">
       <div className="grid gap-6">
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">
@@ -72,7 +72,7 @@ function AdminOrderDetailsView({ orderDetails }) {
               <Badge
                 className={`py-1 px-3 ${
                   orderDetails?.orderStatus === "confirmed"
-                    ? "bg-green-500"
+                    ? "bg-black"
                     : orderDetails?.orderStatus === "rejected"
                     ? "bg-red-600"
                     : "bg-black"
