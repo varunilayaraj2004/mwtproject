@@ -4,10 +4,10 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
-const fetch = require("node-fetch");
 const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 // Routers
 const authRouter = require("./routes/auth/auth-routes");

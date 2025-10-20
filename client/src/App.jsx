@@ -23,6 +23,7 @@ import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/search";
 import ProductDetailsPage from "./pages/shopping-view/product-details-page";
+import CursorBubbles from "./components/common/cursor-bubbles";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -40,6 +41,7 @@ function App() {
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
+      <CursorBubbles />
       <Routes>
         <Route
           path="/"

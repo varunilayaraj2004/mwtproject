@@ -16,7 +16,7 @@ function ShoppingProductTile({
   const navigate = useNavigate();
 
   return (
-    <Card className="w-full rounded-3xl max-w-sm mx-auto hover:shadow-2xl">
+    <Card className="w-full rounded-3xl max-w-sm mx-auto hover:shadow-2xl group">
       <div onClick={() => navigate(`/shop/product/${product?._id}`)} className="cursor-pointer">
         <div className="relative">
           <img
@@ -26,31 +26,31 @@ function ShoppingProductTile({
             onError={() => setImgError(true)}
           />
           {product?.totalStock === 0 ? (
-            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+            <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1 rounded-full shadow-lg">
               Out Of Stock
             </Badge>
           ) : product?.totalStock < 10 ? (
-            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
-              {`Only ${product?.totalStock} items left`}
+            <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1 rounded-full shadow-lg">
+              {`Only ${product?.totalStock} left`}
             </Badge>
           ) : product?.salePrice > 0 ? (
-            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+            <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold px-3 py-1 rounded-full shadow-lg">
               Sale
             </Badge>
           ) : null}
         </div>
-        <CardContent className="p-4">
-          <h2 className="text-xl font-bold mb-2">{product?.title}</h2>
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-[16px] text-muted-foreground">
+        <CardContent className="p-6">
+          <h2 className="text-xl font-bold mb-3 text-gray-800 line-clamp-2">{product?.title}</h2>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
               {categoryOptionsMap[product?.category]}
             </span>
-            <span className="text-[16px] text-muted-foreground">
+            <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
               {brandOptionsMap[product?.brand]}
             </span>
           </div>
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-lg font-semibold text-primary">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-2xl font-bold text-primary">
               ₹
               {product?.salePrice > 0 ? product.salePrice : product?.price}
             </span>
@@ -62,15 +62,15 @@ function ShoppingProductTile({
           </div>
         </CardContent>
       </div>
-      <CardFooter>
+      <CardFooter className="p-6 pt-0">
         {product?.totalStock === 0 ? (
-          <Button className="w-full opacity-60 cursor-not-allowed">
+          <Button className="w-full opacity-60 cursor-not-allowed bg-gray-400 text-white font-semibold py-3 rounded-xl">
             Out of Stock
           </Button>
         ) : (
           <Button
             onClick={() => handleAddtoCart(product?._id, product?.totalStock)}
-            className="w-full"
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Add to cart
           </Button>

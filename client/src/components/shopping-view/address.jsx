@@ -112,31 +112,45 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
   console.log(addressList, "addressList");
 
   return (
-    <Card>
-      <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2  gap-2">
+    <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-gray-50 rounded-2xl overflow-hidden">
+      <div className="mb-6 p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {addressList && addressList.length > 0
           ? addressList.map((singleAddressItem) => (
-              <AddressCard
-                selectedId={selectedId}
-                handleDeleteAddress={handleDeleteAddress}
-                addressInfo={singleAddressItem}
-                handleEditAddress={handleEditAddress}
-                setCurrentSelectedAddress={setCurrentSelectedAddress}
-              />
+              <div key={singleAddressItem._id} className="transform hover:scale-105 transition-transform duration-200">
+                <AddressCard
+                  selectedId={selectedId}
+                  handleDeleteAddress={handleDeleteAddress}
+                  addressInfo={singleAddressItem}
+                  handleEditAddress={handleEditAddress}
+                  setCurrentSelectedAddress={setCurrentSelectedAddress}
+                />
+              </div>
             ))
-          : null}
+          : (
+            <div className="col-span-full text-center py-12">
+              <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <p className="text-gray-500 text-lg mb-2">No addresses found</p>
+              <p className="text-gray-400">Add your first address below to get started.</p>
+            </div>
+          )}
       </div>
-      <CardHeader>
-        <CardTitle>
-          {currentEditedId !== null ? "Edit Address" : "Add New Address"}
+      <CardHeader className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-t-2xl">
+        <CardTitle className="text-2xl font-bold flex items-center space-x-2">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          <span>{currentEditedId !== null ? "Edit Address" : "Add New Address"}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="p-6 space-y-4">
         <CommonForm
           formControls={addressFormControls}
           formData={formData}
           setFormData={setFormData}
-          buttonText={currentEditedId !== null ? "Edit" : "Add"}
+          buttonText={currentEditedId !== null ? "Edit Address" : "Add Address"}
           onSubmit={handleManageAddress}
           isBtnDisabled={!isFormValid()}
         />

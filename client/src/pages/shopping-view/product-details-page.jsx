@@ -178,16 +178,16 @@ function ProductDetailsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-8 bg-gray-50 min-h-screen grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <div className="max-w-7xl mx-auto p-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen grid grid-cols-1 lg:grid-cols-3 gap-12">
       {/* Left / Images Section */}
       <div className="col-span-1">
         {/* Main product image/public view */}
         <img
           src={selectedImage || productDetails.image}
           alt={productDetails?.title}
-          className="w-full h-96 lg:h-[500px] rounded-xl object-cover shadow-lg"
+          className="w-full h-96 lg:h-[500px] rounded-2xl object-cover shadow-xl border-4 border-white"
         />
-        <div className="flex gap-3 mt-6 overflow-x-auto pb-2">
+        <div className="flex gap-4 mt-8 overflow-x-auto pb-2">
           {[productDetails.image, ...(productDetails.additionalImages || [])].map(
             (img, idx) =>
               img && (
@@ -195,8 +195,8 @@ function ProductDetailsPage() {
                   key={idx}
                   src={img}
                   alt={`Thumbnail ${idx}`}
-                  className={`w-24 h-24 rounded-lg cursor-pointer object-cover border-2 transition-all duration-200 hover:scale-105 ${
-                    selectedImage === img ? "border-blue-500 shadow-md" : "border-gray-300 hover:border-gray-400"
+                  className={`w-20 h-20 rounded-xl cursor-pointer object-cover border-4 transition-all duration-300 hover:scale-110 shadow-md ${
+                    selectedImage === img ? "border-blue-500 shadow-lg ring-2 ring-blue-300" : "border-gray-200 hover:border-blue-400"
                   }`}
                   onClick={() => {
                     setSelectedImage(img);
@@ -207,25 +207,25 @@ function ProductDetailsPage() {
         </div>
 
         {/* AI Try-On Section */}
-        <div className="mt-8 border-t border-gray-200 pt-8 bg-white rounded-lg p-6 shadow-sm">
-          <h3 className="text-xl font-bold mb-6 text-gray-800">AI Try-On Feature</h3>
-          <Label htmlFor="personImage" className="block mb-4 text-gray-700 font-medium">Person Image URL</Label>
+        <div className="mt-10 border-t border-gray-200 pt-8 bg-white rounded-2xl p-8 shadow-lg">
+          <h3 className="text-2xl font-bold mb-6 text-gray-800">AI Try-On Feature</h3>
+          <Label htmlFor="personImage" className="block mb-4 text-gray-700 font-semibold text-lg">Person Image URL</Label>
           <Input
             id="personImage"
             type="url"
             value={personImageUrl}
             onChange={(e) => setPersonImageUrl(e.target.value)}
             placeholder="Enter URL of person image"
-            className="mb-6 border-gray-300 focus:border-blue-500 rounded-lg"
+            className="mb-6 border-gray-300 focus:border-blue-500 rounded-xl py-3 px-4 text-lg"
           />
-          <Button onClick={handleTryOn} disabled={isTryingOn} className="w-full mb-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors">
+          <Button onClick={handleTryOn} disabled={isTryingOn} className="w-full mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl">
             {isTryingOn ? "Trying On..." : "Try On"}
           </Button>
-          {tryOnError && <p className="text-red-500 mb-4 font-medium">{tryOnError}</p>}
+          {tryOnError && <p className="text-red-500 mb-4 font-medium text-center">{tryOnError}</p>}
           {tryOnResult && (
             <div>
-              <h4 className="text-lg font-semibold mb-4 text-gray-800">Try-On Result</h4>
-              <img src={tryOnResult.image || tryOnResult.result || tryOnResult} alt="Try-on result" className="w-full rounded-lg shadow-md" />
+              <h4 className="text-xl font-semibold mb-4 text-gray-800">Try-On Result</h4>
+              <img src={tryOnResult.image || tryOnResult.result || tryOnResult} alt="Try-on result" className="w-full rounded-xl shadow-lg border-4 border-white" />
             </div>
           )}
         </div>

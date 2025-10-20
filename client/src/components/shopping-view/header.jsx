@@ -53,7 +53,7 @@ function MenuItems() {
       {shoppingViewHeaderMenuItems.map((menuItem) => (
         <Label
           onClick={() => handleNavigate(menuItem)}
-          className="text-sm font-medium cursor-pointer"
+          className="text-sm font-medium cursor-pointer text-white hover:text-yellow-300 transition-colors"
           key={menuItem.id}
         >
           {menuItem.label}
@@ -137,11 +137,12 @@ function ShoppingHeader() {
   // const { isAuthenticated } = useSelector((state) => state.auth);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-blue-50">
+    <header className="sticky top-0 z-40 w-full border-b bg-gradient-to-r from-red-500 to-indigo-500 shadow-lg">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
-        <Link to="/shop/home" className="flex items-center gap-2">
-          <HousePlug className="h-6 w-6" />
-          <img src={logo} alt="AiAge Logo" className="h-16 w-16 rounded-full object-cover border-2 border-gray-300 shadow-md" />
+        <Link to="/shop/home" className="flex items-center gap-3 hover:scale-105 transition-transform">
+          <HousePlug className="h-7 w-7 text-white" />
+          <img src={logo} alt="AiAge Logo" className="h-12 w-12 rounded-full object-cover border-2 border-white shadow-lg" />
+          <span className="text-white font-bold text-xl hidden sm:block"></span>
         </Link>
         <Sheet>
           <SheetTrigger asChild>

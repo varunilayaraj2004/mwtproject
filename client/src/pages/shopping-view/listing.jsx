@@ -130,32 +130,38 @@ function ShoppingListing() {
   console.log(productList, "productListproductListproductList");
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
+    <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-8 p-6 md:p-8 bg-gray-50 min-h-screen">
       <ProductFilter filters={filters} handleFilter={handleFilter} />
-      <div className=" w-full rounded-lg shadow-2xl bg-yellow-50">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-lg font-extrabold">Men&apos;s Products</h2>
-          <div className="flex items-center gap-3">
-            <span className="text-muted-foreground">
-              {productList?.length} Products
-            </span>
+      <div className="w-full rounded-xl shadow-lg bg-white border border-gray-200">
+        <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
+          <h2 className="text-2xl font-bold text-gray-800">Men&apos;s Fashion Collection</h2>
+          <p className="text-gray-600 mt-1">Discover the latest trends in men's clothing</p>
+        </div>
+        <div className="p-6 border-b border-gray-200 bg-gray-50">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-full border">
+                {productList?.length || 0} Products
+              </span>
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex items-center gap-1 rounded-xl"
+                  className="flex items-center gap-2 rounded-lg border-gray-300 hover:border-blue-400 transition-colors"
                 >
                   <ArrowUpDownIcon className="h-4 w-4" />
                   <span>Sort by</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[200px]">
+              <DropdownMenuContent align="end" className="w-[200px] bg-white border border-gray-200 shadow-lg">
                 <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
                   {sortOptions.map((sortItem) => (
                     <DropdownMenuRadioItem
                       value={sortItem.id}
                       key={sortItem.id}
+                      className="hover:bg-blue-50 cursor-pointer"
                     >
                       {sortItem.label}
                     </DropdownMenuRadioItem>
@@ -165,16 +171,23 @@ function ShoppingListing() {
             </DropdownMenu>
           </div>
         </div>
-        <div className="bg-yellow-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-          {productList && productList.length > 0
-            ? productList.map((productItem) => (
-                <ShoppingProductTile
-                  key={productItem._id}
-                  product={productItem}
-                  handleAddtoCart={handleAddtoCart}
-                />
-              ))
-            : null}
+        <div className="p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {productList && productList.length > 0
+              ? productList.map((productItem) => (
+                  <ShoppingProductTile
+                    key={productItem._id}
+                    product={productItem}
+                    handleAddtoCart={handleAddtoCart}
+                  />
+                ))
+              : (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
+                    <p className="text-gray-400 text-sm mt-2">Try adjusting your filters or search terms.</p>
+                  </div>
+                )}
+          </div>
         </div>
       </div>
     </div>

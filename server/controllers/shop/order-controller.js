@@ -97,10 +97,10 @@ const createOrder = async (req, res) => {
 
       paypal.payment.create(create_payment_json, async function (error, payment) {
         if (error) {
-          console.log(error);
+          console.log("PayPal payment creation error:", error);
           return res.status(500).json({
             success: false,
-            message: "Error while creating PayPal payment",
+            message: "Error while creating PayPal payment. Please check PayPal configuration.",
           });
         } else {
           newlyCreatedOrder.paypalOrderId = payment.id;
