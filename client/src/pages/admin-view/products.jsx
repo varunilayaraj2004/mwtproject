@@ -53,7 +53,10 @@ function AdminProducts() {
       dispatch(
         editProduct({
           id: currentEditedId,
-          formData,
+          formData: {
+            ...formData,
+            image: uploadedImageUrl || formData.image,
+          },
         })
       ).then((data) => {
         if (data?.payload?.success) {
@@ -61,6 +64,8 @@ function AdminProducts() {
           setFormData(initialFormData);
           setOpenCreateProductsDialog(false);
           setCurrentEditedId(null);
+          setImageFile(null);
+          setUploadedImageUrl("");
           toast({
             title: "Product updated successfully",
           });
@@ -79,6 +84,7 @@ function AdminProducts() {
           setOpenCreateProductsDialog(false);
           setImageFile(null);
           setFormData(initialFormData);
+          setUploadedImageUrl("");
           toast({
             title: "Product added successfully",
           });

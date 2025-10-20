@@ -46,7 +46,13 @@ function ProductImageUpload({
       data.append("my_file", imageFile);
       const response = await axios.post(
         "http://localhost:5000/api/admin/products/upload-image",
-        data
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
       );
       if (response?.data?.success) {
         setUploadedImageUrl(response.data.result.url);
