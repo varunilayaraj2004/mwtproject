@@ -54,12 +54,12 @@ function CommonForm({
             value={value}
           >
             <SelectTrigger className="w-full rounded-xl border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm hover:border-blue-400">
-              <SelectValue placeholder={getControlItem.label} />
+              <SelectValue className="hover:border-blue-400" placeholder={getControlItem.label} />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="rounded-xl bg-white border-gray-300 shadow-lg hover:border-blue-400">
               {getControlItem.options && getControlItem.options.length > 0
                 ? getControlItem.options.map((optionItem) => (
-                    <SelectItem key={optionItem.id} value={optionItem.id}>
+                    <SelectItem className="hover:border-blue-400" key={optionItem.id} value={optionItem.id}>
                       {optionItem.label}
                     </SelectItem>
                   ))
