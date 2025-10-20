@@ -1,5 +1,6 @@
 const Product = require("../../models/Product");
 const Order = require("../../models/Order");
+const User = require("../../models/User");
 
 const getDashboardStats = async (req, res) => {
   try {
@@ -21,6 +22,9 @@ const getDashboardStats = async (req, res) => {
       { $group: { _id: null, total: { $sum: "$totalAmount" } } }
     ]);
     const profit = totalSales[0]?.total || 0;
+
+    // Active Users (total registered users)
+    const activeUsers = await User.countDocuments();
 
     // Stock by Category
     const stockData = await Product.aggregate([
@@ -51,6 +55,7 @@ const getDashboardStats = async (req, res) => {
         totalStock: totalStockCount,
         itemsSold: itemsSoldCount,
         profit: profit,
+        activeUsers,
         stockData,
         profitData
       }

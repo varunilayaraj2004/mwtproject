@@ -20,6 +20,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import { TrendingUp, Package, DollarSign, Users } from "lucide-react";
 
 function AdminDashboard() {
   const [imageFile, setImageFile] = useState(null);
@@ -36,67 +37,135 @@ function AdminDashboard() {
     dispatch(getDashboardStats());
   }, [dispatch]);
 
-  if (loading) return <p className="text-center mt-10 text-gray-500">Loading dashboard...</p>;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    </div>
+  );
 
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+  const COLORS = ["#6366f1", "#8b5cf6", "#06b6d4", "#10b981"];
 
   return (
-    <div className="p-6 space-y-8">
-      <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
-      {/* Dashboard Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-4 shadow-md">
-          <CardTitle>Total Stock</CardTitle>
+    <div className="p-8 space-y-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+          Admin Dashboard
+        </h1>
+        <p className="text-slate-600">Welcome back! Here's what's happening with your store today.</p>
+      </div>
+
+      {/* Dashboard Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-blue-800">Total Stock</CardTitle>
+            <Package className="h-4 w-4 text-blue-600" />
+          </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold mt-2 text-blue-600">
+            <div className="text-3xl font-bold text-blue-900">
               {dashboardStats?.totalStock ?? 0}
-            </p>
+            </div>
+            <p className="text-xs text-blue-600 mt-1">Available inventory</p>
           </CardContent>
         </Card>
-        <Card className="p-4 shadow-md">
-          <CardTitle>Items Sold</CardTitle>
+
+        <Card className="bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 border-green-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-green-800">Items Sold</CardTitle>
+            <TrendingUp className="h-4 w-4 text-green-600" />
+          </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold mt-2 text-green-600">
+            <div className="text-3xl font-bold text-green-900">
               {dashboardStats?.itemsSold ?? 0}
-            </p>
+            </div>
+            <p className="text-xs text-green-600 mt-1">Total sales</p>
           </CardContent>
         </Card>
-        <Card className="p-4 shadow-md">
-          <CardTitle>Total Profit</CardTitle>
+
+        <Card className="bg-gradient-to-br from-yellow-50 via-orange-50 to-yellow-100 border-yellow-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-yellow-800">Total Profit</CardTitle>
+            <DollarSign className="h-4 w-4 text-yellow-600" />
+          </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold mt-2 text-yellow-600">
+            <div className="text-3xl font-bold text-yellow-900">
               ₹{dashboardStats?.profit ?? 0}
-            </p>
+            </div>
+            <p className="text-xs text-yellow-600 mt-1">Revenue generated</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-purple-800">Registered Users</CardTitle>
+            <Users className="h-4 w-4 text-purple-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-purple-900">
+              {dashboardStats?.activeUsers ?? 0}
+            </div>
+            <p className="text-xs text-purple-600 mt-1">Total registered accounts</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
         {/* Stock Chart */}
-        <Card className="p-6">
-          <CardHeader>
-            <CardTitle>Stock by Category</CardTitle>
+        <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-xl font-semibold text-slate-800 flex items-center gap-2">
+              <Package className="h-5 w-5 text-indigo-600" />
+              Stock by Category
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={dashboardStats?.stockData || []}>
-                <XAxis dataKey="category" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="stock" fill="#36A2EB" />
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={dashboardStats?.stockData || []} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <XAxis
+                  dataKey="category"
+                  tick={{ fontSize: 12, fill: '#64748b' }}
+                  axisLine={{ stroke: '#e2e8f0' }}
+                />
+                <YAxis
+                  tick={{ fontSize: 12, fill: '#64748b' }}
+                  axisLine={{ stroke: '#e2e8f0' }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'white',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}
+                />
+                <Bar
+                  dataKey="stock"
+                  fill="url(#stockGradient)"
+                  radius={[4, 4, 0, 0]}
+                />
+                <defs>
+                  <linearGradient id="stockGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.6}/>
+                  </linearGradient>
+                </defs>
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Profit Chart */}
-        <Card className="p-6">
-          <CardHeader>
-            <CardTitle>Profit vs Expense</CardTitle>
+        <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-xl font-semibold text-slate-800 flex items-center gap-2">
+              <DollarSign className="h-5 w-5 text-purple-600" />
+              Profit vs Expense
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
                   data={dashboardStats?.profitData || []}
@@ -104,15 +173,27 @@ function AdminDashboard() {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
-                  label
+                  outerRadius={100}
+                  innerRadius={40}
+                  paddingAngle={2}
                 >
                   {(dashboardStats?.profitData || []).map((_, i) => (
                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
                   ))}
                 </Pie>
-                <Legend />
-                <Tooltip />
+                <Legend
+                  verticalAlign="bottom"
+                  height={36}
+                  iconType="circle"
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'white',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
