@@ -8,6 +8,7 @@ const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fileUpload = require("express-fileupload");
 
 // Routers
 const authRouter = require("./routes/auth/auth-routes");
@@ -21,8 +22,9 @@ const shopOrderRouter = require("./routes/shop/order-routes");
 const shopSearchRouter = require("./routes/shop/search-routes");
 const shopReviewRouter = require("./routes/shop/review-routes");
 const commonFeatureRouter = require("./routes/common/feature-routes");
-const huggingfaceRouter = require("./routes/huggingface-routes");
 const paymentRouter = require("./routes/payment-routes");
+const tryOnRouter = require("./routes/tryon");
+
 
 // Models
 const User = require("./models/User");
@@ -30,6 +32,10 @@ const User = require("./models/User");
 // Debug Mongo URI
 console.log("MONGO_URI:", process.env.MONGO_URI);
 console.log("Type:", typeof process.env.MONGO_URI);
+
+
+
+
 
 // MongoDB Connection
 mongoose
@@ -99,6 +105,14 @@ passport.deserializeUser(async (id, done) => {
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: "/tmp/",
+}));
+
+
+app.use("/api/tryon", tryOnRouter);
+
 // CORS Setup
 app.use(
   cors({
@@ -115,6 +129,7 @@ app.use(
   })
 );
 
+app.use(fileUpload());
 app.use(cookieParser());
 app.use(express.json());
 
@@ -139,7 +154,6 @@ app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/shop/review", shopReviewRouter);
 app.use("/api/common/feature", commonFeatureRouter);
-app.use("/api/ai", huggingfaceRouter);
 app.use("/api/payment", paymentRouter);
 
 
