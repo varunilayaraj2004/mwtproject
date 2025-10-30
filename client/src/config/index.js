@@ -98,6 +98,40 @@ export const addProductFormElements = [
     type: "number",
     placeholder: "Enter total stock",
   },
+  {
+    label: "Size",
+    name: "size",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter sizes (comma separated, e.g., S,M,L,XL)",
+  },
+  {
+    label: "Fit",
+    name: "fit",
+    componentType: "select",
+    options: [
+      { id: "slim", label: "Slim" },
+      { id: "regular", label: "Regular" },
+      { id: "loose", label: "Loose" },
+    ],
+  },
+  {
+    label: "Material",
+    name: "material",
+    componentType: "select",
+    options: [
+      { id: "cotton", label: "Cotton" },
+      { id: "polyester", label: "Polyester" },
+      { id: "linen", label: "Linen" },
+      { id: "denim", label: "Denim" },
+      { id: "leather", label: "Leather" },
+      { id: "nylon", label: "Nylon" },
+      { id: "synthetic", label: "Synthetic" },
+      { id: "canvas", label: "Canvas" },
+      { id: "metal", label: "Metal" },
+      { id: "fabric", label: "Fabric" },
+    ],
+  },
 ];
 
 export const shoppingViewHeaderMenuItems = [

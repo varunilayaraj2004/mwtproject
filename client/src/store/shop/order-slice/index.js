@@ -21,15 +21,15 @@ export const createNewOrder = createAsyncThunk(
   }
 );
 
-export const capturePayment = createAsyncThunk(
-  "/order/capturePayment",
-  async ({ paymentId, payerId, orderId }) => {
+export const verifyPayment = createAsyncThunk(
+  "/order/verifyPayment",
+  async ({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) => {
     const response = await axios.post(
-      "http://localhost:5000/api/shop/order/capture",
+      "http://localhost:5000/api/payment/verify",
       {
-        paymentId,
-        payerId,
-        orderId,
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
       }
     );
 
@@ -107,6 +107,15 @@ const shoppingOrderSlice = createSlice({
       .addCase(getOrderDetails.rejected, (state) => {
         state.isLoading = false;
         state.orderDetails = null;
+      })
+      .addCase(verifyPayment.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(verifyPayment.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(verifyPayment.rejected, (state) => {
+        state.isLoading = false;
       });
   },
 });

@@ -3,9 +3,7 @@ const Product = require("../../models/Product");
 
 const handleImageUpload = async (req, res) => {
   try {
-    const b64 = Buffer.from(req.file.buffer).toString("base64");
-    const url = "data:" + req.file.mimetype + ";base64," + b64;
-    const result = await imageUploadUtil(url);
+    const result = await imageUploadUtil(req.file.buffer);
 
     res.json({
       success: true,
@@ -33,9 +31,10 @@ const addProduct = async (req, res) => {
       salePrice,
       totalStock,
       averageReview,
+      size,
+      fit,
+      material,
     } = req.body;
-
-    console.log(averageReview, "averageReview");
 
     const newlyCreatedProduct = new Product({
       image,
@@ -43,10 +42,13 @@ const addProduct = async (req, res) => {
       description,
       category,
       brand,
-      price,
-      salePrice,
-      totalStock,
-      averageReview,
+      price: Number(price),
+      salePrice: Number(salePrice),
+      totalStock: Number(totalStock),
+      averageReview: Number(averageReview),
+      size: size ? size.split(',').map(s => s.trim()) : [],
+      fit,
+      material,
     });
 
     await newlyCreatedProduct.save();
@@ -95,6 +97,9 @@ const editProduct = async (req, res) => {
       salePrice,
       totalStock,
       averageReview,
+      size,
+      fit,
+      material,
     } = req.body;
 
     let findProduct = await Product.findById(id);
@@ -108,12 +113,15 @@ const editProduct = async (req, res) => {
     findProduct.description = description || findProduct.description;
     findProduct.category = category || findProduct.category;
     findProduct.brand = brand || findProduct.brand;
-    findProduct.price = price === "" ? 0 : price || findProduct.price;
+    findProduct.price = price === "" ? 0 : Number(price) || findProduct.price;
     findProduct.salePrice =
-      salePrice === "" ? 0 : salePrice || findProduct.salePrice;
-    findProduct.totalStock = totalStock || findProduct.totalStock;
+      salePrice === "" ? 0 : Number(salePrice) || findProduct.salePrice;
+    findProduct.totalStock = Number(totalStock) || findProduct.totalStock;
+    findProduct.averageReview = Number(averageReview) || findProduct.averageReview;
     findProduct.image = image || findProduct.image;
-    findProduct.averageReview = averageReview || findProduct.averageReview;
+    findProduct.size = size ? size.split(',').map(s => s.trim()) : findProduct.size;
+    findProduct.fit = fit || findProduct.fit;
+    findProduct.material = material || findProduct.material;
 
     await findProduct.save();
     res.status(200).json({

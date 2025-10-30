@@ -49,6 +49,19 @@ function ShoppingProductTile({
               {brandOptionsMap[product?.brand]}
             </span>
           </div>
+          {(product?.size || product?.fit || product?.material) && (
+            <div className="text-xs text-gray-500 mb-3 space-y-1">
+              {product?.size && product.size.length > 0 && (
+                <div>Sizes: {product.size.join(', ')}</div>
+              )}
+              {product?.fit && (
+                <div>Fit: {product.fit}</div>
+              )}
+              {product?.material && (
+                <div>Material: {product.material}</div>
+              )}
+            </div>
+          )}
           <div className="flex justify-between items-center mb-4">
             <span className="text-2xl font-bold text-primary">
               ₹

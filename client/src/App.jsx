@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
-import PaypalReturnPage from "./pages/shopping-view/paypal-return";
+import RazorpayReturnPage from "./pages/shopping-view/razorpay-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/search";
 import ProductDetailsPage from "./pages/shopping-view/product-details-page";
@@ -88,7 +88,7 @@ function App() {
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
           <Route path="account" element={<ShoppingAccount />} />
-          <Route path="paypal-return" element={<PaypalReturnPage />} />
+          <Route path="razorpay-return" element={<RazorpayReturnPage />} />
           <Route path="payment-success" element={<PaymentSuccessPage />} />
           <Route path="search" element={<SearchProducts />} />
           <Route path="product/:id" element={<ProductDetailsPage />} />

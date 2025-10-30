@@ -22,6 +22,7 @@ const shopSearchRouter = require("./routes/shop/search-routes");
 const shopReviewRouter = require("./routes/shop/review-routes");
 const commonFeatureRouter = require("./routes/common/feature-routes");
 const huggingfaceRouter = require("./routes/huggingface-routes");
+const paymentRouter = require("./routes/payment-routes");
 
 // Models
 const User = require("./models/User");
@@ -139,6 +140,7 @@ app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/shop/review", shopReviewRouter);
 app.use("/api/common/feature", commonFeatureRouter);
 app.use("/api/ai", huggingfaceRouter);
+app.use("/api/payment", paymentRouter);
 
 
 

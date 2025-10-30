@@ -32,6 +32,21 @@ function AdminProductTile({
               <span className="text-lg font-bold">₹{product?.salePrice}</span>
             ) : null}
           </div>
+          {product?.size && product.size.length > 0 && (
+            <div className="text-sm text-gray-600 mb-1">
+              Sizes: {product.size.join(', ')}
+            </div>
+          )}
+          {product?.fit && (
+            <div className="text-sm text-gray-600 mb-1">
+              Fit: {product.fit}
+            </div>
+          )}
+          {product?.material && (
+            <div className="text-sm text-gray-600 mb-1">
+              Material: {product.material}
+            </div>
+          )}
         </CardContent>
         <CardFooter className="flex justify-between items-center">
           <Button

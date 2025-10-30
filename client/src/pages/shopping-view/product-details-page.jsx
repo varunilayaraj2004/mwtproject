@@ -255,6 +255,34 @@ function ProductDetailsPage() {
         </p>
         <p className="text-gray-700 leading-relaxed mb-8">{productDetails?.description}</p>
 
+        {/* Product Details */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {productDetails?.size && productDetails.size.length > 0 && (
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-800 mb-2">Available Sizes</h4>
+              <div className="flex flex-wrap gap-2">
+                {productDetails.size.map((size, index) => (
+                  <span key={index} className="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm">
+                    {size}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {productDetails?.fit && (
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-800 mb-2">Fit</h4>
+              <p className="text-gray-600">{productDetails.fit}</p>
+            </div>
+          )}
+          {productDetails?.material && (
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-800 mb-2">Material</h4>
+              <p className="text-gray-600">{productDetails.material}</p>
+            </div>
+          )}
+        </div>
+
         <Button
           className={`w-56 mb-8 py-3 px-6 rounded-lg font-semibold text-lg transition-all ${
             productDetails.totalStock === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg"

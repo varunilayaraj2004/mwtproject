@@ -1,16 +1,19 @@
-const mongoose = require('mongoose');
-const paypal = require("../../helpers/paypal");
+const mongoose = require("mongoose");
+const razorpay = require("../../helpers/razorpay");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
+const crypto = require("crypto");
 
+/**
+ * ✅ Create a new order (COD or PayPal)
+ */
 const createOrder = async (req, res) => {
   try {
     const {
       userId,
       cartItems,
       addressInfo,
-      orderStatus,
       paymentMethod,
       paymentStatus,
       totalAmount,
@@ -21,183 +24,172 @@ const createOrder = async (req, res) => {
       cartId,
     } = req.body;
 
+    console.log("🛒 Incoming order request:", req.body);
+
+    // ✅ Validate required fields
+    if (!userId || !cartItems?.length || !totalAmount) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields (userId, cartItems, or totalAmount).",
+      });
+    }
+
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
+    /**
+     * ✅ CASH ON DELIVERY
+     */
     if (paymentMethod === "cod") {
-      const newlyCreatedOrder = new Order({
+      console.log("💰 Processing Cash on Delivery (COD) order...");
+
+      const newOrder = new Order({
         userId: userObjectId,
         cartId,
         cartItems,
         addressInfo,
         orderStatus: "confirmed",
         paymentMethod,
-        paymentStatus,
+        paymentStatus: "pending",
         totalAmount,
-        orderDate,
-        orderUpdateDate,
-        paymentId,
-        payerId,
+        orderDate: orderDate || new Date(),
+        orderUpdateDate: orderUpdateDate || new Date(),
+        paymentId: paymentId || "",
+        payerId: payerId || "",
       });
 
-      await newlyCreatedOrder.save();
+      await newOrder.save();
 
-      // Delete cart
-      await Cart.findByIdAndDelete(cartId);
+      // Delete user's cart after order placement
+      if (cartId && mongoose.Types.ObjectId.isValid(cartId)) {
+        await Cart.findByIdAndDelete(cartId);
+      }
 
-      res.status(201).json({
+      console.log("✅ COD order created successfully:", newOrder._id);
+      return res.status(201).json({
         success: true,
-        orderId: newlyCreatedOrder._id,
-      });
-    } else {
-      const newlyCreatedOrder = new Order({
-        userId: userObjectId,
-        cartId,
-        cartItems,
-        addressInfo,
-        orderStatus,
-        paymentMethod: "paypal",
-        paymentStatus,
-        totalAmount,
-        orderDate,
-        orderUpdateDate,
-        paymentId: "",
-        payerId: "",
-      });
-
-      await newlyCreatedOrder.save();
-
-      const create_payment_json = {
-        intent: "sale",
-        payer: {
-          payment_method: "paypal",
-        },
-        redirect_urls: {
-          return_url: "http://localhost:3000/shop/paypal-return",
-          cancel_url: "http://localhost:3000/shop/checkout",
-        },
-        transactions: [
-          {
-            item_list: {
-              items: cartItems.map((item) => ({
-                name: item.title,
-                sku: item.productId,
-                price: item.price.toString(),
-                currency: "USD",
-                quantity: item.quantity,
-              })),
-            },
-            amount: {
-              currency: "USD",
-              total: totalAmount.toString(),
-            },
-            description: "Payment for order",
-          },
-        ],
-      };
-
-      paypal.payment.create(create_payment_json, async function (error, payment) {
-        if (error) {
-          console.log("PayPal payment creation error:", error);
-          return res.status(500).json({
-            success: false,
-            message: "Error while creating PayPal payment. Please check PayPal configuration.",
-          });
-        } else {
-          newlyCreatedOrder.paypalOrderId = payment.id;
-          await newlyCreatedOrder.save();
-
-          const approvalURL = payment.links.find(
-            (link) => link.rel === "approval_url"
-          ).href;
-
-          res.status(201).json({
-            success: true,
-            approvalURL,
-            orderId: newlyCreatedOrder._id,
-            paymentId: payment.id,
-          });
-        }
+        orderId: newOrder._id,
+        message: "Order placed successfully with Cash on Delivery.",
       });
     }
-  } catch (e) {
-    console.log(e);
+
+    /**
+     * ✅ RAZORPAY ORDER CREATION
+     */
+    console.log("💳 Creating Razorpay order for user:", userId);
+
+    const newOrder = new Order({
+      userId: userObjectId,
+      cartId,
+      cartItems,
+      addressInfo,
+      orderStatus: "pending",
+      paymentMethod: "razorpay",
+      paymentStatus: "unpaid",
+      totalAmount,
+      orderDate: orderDate || new Date(),
+      orderUpdateDate: orderUpdateDate || new Date(),
+      paymentId: "",
+      payerId: "",
+    });
+
+    await newOrder.save();
+
+    const options = {
+      amount: totalAmount * 100, // amount in paise
+      currency: "INR",
+      receipt: "receipt_" + newOrder._id,
+    };
+
+    try {
+      const order = await razorpay.orders.create(options);
+      newOrder.razorpayOrderId = order.id;
+      await newOrder.save();
+
+      console.log("✅ Razorpay order created successfully:", order.id);
+      res.status(201).json({
+        success: true,
+        order,
+        orderId: newOrder._id,
+      });
+    } catch (err) {
+      console.error("❌ Razorpay order creation failed:", err);
+      res.status(500).json({ error: "Failed to create order" });
+    }
+  } catch (err) {
+    console.error("🔥 Error in createOrder:", err);
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: "An unexpected error occurred while creating the order.",
     });
   }
 };
 
-const capturePayment = async (req, res) => {
+/**
+ * ✅ Verify Razorpay Payment
+ */
+const verifyPayment = async (req, res) => {
   try {
-    const { paymentId, payerId, orderId } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
 
-    paypal.payment.execute(
-      paymentId,
-      { payer_id: payerId },
-      async function (error, payment) {
-        if (error) {
-          console.log(error);
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(body.toString())
+      .digest("hex");
+
+    if (expectedSignature === razorpay_signature) {
+      const order = await Order.findOne({ razorpayOrderId: razorpay_order_id });
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: "Order not found.",
+        });
+      }
+
+      // ✅ Update order & stock
+      order.paymentStatus = "paid";
+      order.orderStatus = "confirmed";
+      order.paymentId = razorpay_payment_id;
+
+      for (const item of order.cartItems) {
+        const product = await Product.findById(item.productId);
+        if (!product) continue;
+
+        if (product.totalStock < item.quantity) {
           return res.status(400).json({
             success: false,
-            message: "Payment execution failed",
-          });
-        } else {
-          let order = await Order.findById(orderId);
-
-          if (!order) {
-            return res.status(404).json({
-              success: false,
-              message: "Order can not be found",
-            });
-          }
-
-          order.paymentStatus = "paid";
-          order.orderStatus = "confirmed";
-          order.paymentId = paymentId;
-          order.payerId = payerId;
-
-          for (let item of order.cartItems) {
-            let product = await Product.findById(item.productId);
-
-            if (!product) {
-              return res.status(404).json({
-                success: false,
-                message: `Not enough stock for this product ${product.title}`,
-              });
-            }
-
-            product.totalStock -= item.quantity;
-
-            await product.save();
-          }
-
-          const getCartId = order.cartId;
-          await Cart.findByIdAndDelete(getCartId);
-
-          await order.save();
-
-          res.status(200).json({
-            success: true,
-            message: "Order confirmed",
-            data: order,
+            message: `Insufficient stock for ${product.title}.`,
           });
         }
+
+        product.totalStock -= item.quantity;
+        await product.save();
       }
-    );
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({
-      success: false,
-      message: "Some error occured!",
-    });
+
+      // Delete the user's cart
+      if (order.cartId && mongoose.Types.ObjectId.isValid(order.cartId)) {
+        await Cart.findByIdAndDelete(order.cartId);
+      }
+
+      await order.save();
+
+      console.log("✅ Payment verified and order confirmed:", order._id);
+      res.json({ success: true, message: "Payment verified" });
+    } else {
+      res.status(400).json({ success: false, message: "Invalid signature" });
+    }
+  } catch (err) {
+    console.error("Verification failed:", err);
+    res.status(500).json({ error: "Verification error" });
   }
 };
 
+/**
+ * ✅ Get all orders by user
+ */
 const getAllOrdersByUser = async (req, res) => {
   try {
     const { userId } = req.params;
-
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
     const orders = await Order.find({ userId: userObjectId });
@@ -205,7 +197,7 @@ const getAllOrdersByUser = async (req, res) => {
     if (!orders.length) {
       return res.status(404).json({
         success: false,
-        message: "No orders found!",
+        message: "No orders found for this user.",
       });
     }
 
@@ -213,25 +205,27 @@ const getAllOrdersByUser = async (req, res) => {
       success: true,
       data: orders,
     });
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.error("🔥 Error in getAllOrdersByUser:", err);
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: "Failed to fetch user orders.",
     });
   }
 };
 
+/**
+ * ✅ Get single order details
+ */
 const getOrderDetails = async (req, res) => {
   try {
     const { id } = req.params;
 
     const order = await Order.findById(id);
-
     if (!order) {
       return res.status(404).json({
         success: false,
-        message: "Order not found!",
+        message: "Order not found.",
       });
     }
 
@@ -239,18 +233,18 @@ const getOrderDetails = async (req, res) => {
       success: true,
       data: order,
     });
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.error("🔥 Error in getOrderDetails:", err);
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: "Failed to retrieve order details.",
     });
   }
 };
 
 module.exports = {
   createOrder,
-  capturePayment,
+  verifyPayment,
   getAllOrdersByUser,
   getOrderDetails,
 };
